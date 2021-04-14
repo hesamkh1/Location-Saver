@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.locationsaver.repository.LoginRepository;
 import com.example.locationsaver.ui.ui.LoginNavigator;
@@ -14,6 +15,7 @@ public class MainViewModel extends AndroidViewModel {
 
     private LoginRepository loginRepository;
     public MainNavigator mListener;
+
     public MainViewModel(@NonNull Application application) {
         super(application);
         loginRepository = LoginRepository.getInstance(application);
@@ -33,6 +35,10 @@ public class MainViewModel extends AndroidViewModel {
         loginRepository.performlogout();
         mListener.onlogout();
     }
+
+
+
+
 }
 
 

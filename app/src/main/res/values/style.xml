@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#F44336</item>
+        <item name="colorAccent">#fff</item>
+    </style>
+
+    <style name="spinner_comments" parent="@style/TextAppearance.AppCompat.Caption">
+    <item name="android:textSize">10sp</item>
+    <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+</resources>

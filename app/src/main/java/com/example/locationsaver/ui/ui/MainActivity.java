@@ -1,11 +1,16 @@
 package com.example.locationsaver.ui.ui;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
@@ -13,10 +18,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.MenuItem;
 
 import com.example.locationsaver.R;
 import com.example.locationsaver.databinding.ActivityMainBinding;
+import com.example.locationsaver.databinding.DrawerToolbarBinding;
 import com.example.locationsaver.viewmodels.MainViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -29,42 +35,39 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements MainNavigator, OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements MainNavigator, NavigationView.OnNavigationItemSelectedListener {
 
-    private GoogleMap mMap;
-    private SupportMapFragment mapFragment;
-    private FusedLocationProviderClient client;
+    private MainViewModel mainViewModel;
+    ActivityMainBinding binding;
+    private Toolbar toolbar;
+    DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         binding.setViewModel(mainViewModel);
         binding.setLifecycleOwner(this);
         mainViewModel.setViewListener(this);
 
-        //Markers
-        FragmentManager myFragmentManager = getSupportFragmentManager();
-        mapFragment = (SupportMapFragment) myFragmentManager
-                .findFragmentById(R.id.google_map);
-        mapFragment.getMapAsync(this);
+        //Drawer
+        initializeViews();
+        toggleDrawer();
+        initializeDefaultFragment(savedInstanceState,0);
 
-        //Current location
-        client = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getCurrentLocation();
+        //first fragment
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_main,new MapFragment()).commit();
 
-        } else {
-            //permissopn denied
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
+
 
     }
-
 
     @Override
     public void onlogout() {
@@ -73,72 +76,88 @@ public class MainActivity extends AppCompatActivity implements MainNavigator, On
         finish();
     }
 
-    @Override
-    public void onMapReady(final GoogleMap googleMap) {
-        mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+    //drawer navigation
+    private void initializeViews() {
+     //   toolbar = findViewById(R.id.default_toolbar);
+        toolbar=binding.defaultToolbar.toolbar;
+        toolbar.setTitle("toolbar_title");
+        setSupportActionBar(toolbar);
+        drawerLayout = binding.drawerLayoutId;
+        navigationView = binding.navigationView;
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+    /**
+     * Checks if the savedInstanceState is null - onCreate() is ran
+     * If so, display fragment of navigation drawer menu at position itemIndex and
+     * set checked status as true
+     * @param savedInstanceState
+     * @param itemIndex
+     */
+    private void initializeDefaultFragment(Bundle savedInstanceState, int itemIndex){
+        if (savedInstanceState == null){
+            MenuItem menuItem = navigationView.getMenu().getItem(itemIndex).setChecked(true);
+            onNavigationItemSelected(menuItem);
         }
-        mMap.setMyLocationEnabled(true);
-        mMap.setPadding(0, 0, 0, 200);
-
-        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("selected")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-                        .alpha(0.7f));
-
-            }
-
-        });
-
-
     }
 
+    /**
+     * Creates an instance of the ActionBarDrawerToggle class:
+     * 1) Handles opening and closing the navigation drawer
+     * 2) Creates a hamburger icon in the toolbar
+     * 3) Attaches listener to open/close drawer on icon clicked and rotates the icon
+     */
+    private void toggleDrawer() {
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+    }
 
-
-
-
-
-    private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+    @Override
+    public void onBackPressed() {
+        //Checks if the navigation drawer is open -- If so, close it
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
-        Task<Location> task = client.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(final Location location) {
-                if(location !=null){
-                    mapFragment.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                            LatLng latLng=new LatLng(location.getLatitude()
-                                    ,location.getLongitude());
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+        // If drawer is already close -- Do not override original functionality
+        else {
+            super.onBackPressed();
+        }
+    }
 
-                        }
-                    });
-                }
-            }
-        });
-}
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()){
+
+            case R.id.home_toolbar:
+                deSelectCheckedState();
+                navigationView.getMenu().getItem(0).setChecked(true);
+                closeDrawer();
+                break;
+            case R.id.logout_toolbar:
+                mainViewModel.onlogoutclick();
+                closeDrawer();
+                break;
+        }
+        return true;
+    }
+    /**
+     * Iterates through all the items in the navigation menu and deselects them:
+     * removes the selection color
+     */
+    private void deSelectCheckedState(){
+        int noOfItems = navigationView.getMenu().size();
+        for (int i=0; i<noOfItems;i++){
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+    }
+    /**
+     * Checks if the navigation drawer is open - if so, close it
+     */
+    private void closeDrawer(){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
 
 }
