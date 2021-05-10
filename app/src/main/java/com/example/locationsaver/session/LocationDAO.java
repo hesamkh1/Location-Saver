@@ -1,5 +1,6 @@
 package com.example.locationsaver.session;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -12,13 +13,13 @@ import java.util.List;
 @Dao
 public interface LocationDAO {
 
-    @Query("SELECT * FROM Location")
-    List<Location> getAll();
+    @Query("SELECT * FROM location_table")
+    LiveData<List<Location>> getAll();
 
-    @Query("SELECT * FROM Location WHERE id IN (:userIds)")
+    @Query("SELECT * FROM location_table WHERE id IN (:userIds)")
     List<Location> loadAllByIds(int[] userIds);
 
-    @Query("SELECT * FROM Location WHERE name LIKE :first AND " +
+    @Query("SELECT * FROM location_table WHERE name LIKE :first AND " +
             "number LIKE :last LIMIT 1")
     Location findByName(String first, String last);
 

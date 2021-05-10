@@ -11,6 +11,8 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
+    String BASE_URL = "http://192.168.100.115/Cafe/";
+
    @GET("register.php")
     Call<User> performRegistration(@Query("name") String Name,
                                    @Query("user_name") String UserName,

@@ -11,7 +11,9 @@
             name="viewModel"
             type="com.example.locationsaver.viewmodels.SavePageViewModel" />
     </data>
-
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,6 +45,7 @@
                     android:textSize="18sp"
                     android:text="Location Name"/>
                 <EditText
+                    android:id="@+id/name_et"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="10dp"
                     android:layout_width="175dp"
@@ -63,6 +66,7 @@
                     android:textSize="18sp"
                     android:text="Number"/>
                 <EditText
+                    android:id="@+id/number_et"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="5dp"
                     android:layout_width="175dp"
@@ -85,6 +89,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"/>
             <EditText
+                android:id="@+id/address_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
@@ -106,6 +111,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"/>
             <EditText
+                android:id="@+id/note_et"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
                 android:padding="5dp"
@@ -114,19 +120,42 @@
                 android:layout_marginTop="10dp"
                 android:background="@color/white"/>
         </LinearLayout>
+        <RelativeLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal"
+            android:gravity="right">
+            <ImageView
+                android:id="@+id/imageholder"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="left"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
+        </RelativeLayout>
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="50dp"
+            android:id="@+id/save_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            android:text="Save"
+            android:background="#009688"
 
-        <include layout="@layout/content_add_image" />
-
+            android:layout_gravity="center"/>
     </LinearLayout>
 
+    </androidx.core.widget.NestedScrollView>
 
 
 </layout>

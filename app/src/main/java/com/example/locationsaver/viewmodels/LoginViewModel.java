@@ -9,15 +9,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.locationsaver.App;
 import com.example.locationsaver.model.User;
-import com.example.locationsaver.remote.ApiClient;
 import com.example.locationsaver.remote.ApiInterface;
-import com.example.locationsaver.repository.LoginRepository;
 import com.example.locationsaver.session.PrefConfig;
 import com.example.locationsaver.ui.ui.LoginNavigator;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +35,8 @@ public class LoginViewModel extends AndroidViewModel {
     public MutableLiveData<String> emailError = new MutableLiveData<>();
     public MutableLiveData<String> passwordError = new MutableLiveData<>();
 
-    private ApiInterface apiInterface;
+    @Inject
+    ApiInterface apiInterface;
     public static PrefConfig prefConfig;
 
     public LoginViewModel(@NonNull Application application) {
@@ -44,8 +45,10 @@ public class LoginViewModel extends AndroidViewModel {
             mutableLiveData = new MutableLiveData<>();
         }
         //loginRepository = LoginRepository.getInstance(application);
-        apiInterface= ApiClient.getApiClient().create(ApiInterface.class);
+        ((App) getApplication()).getAppComponent().inject(this);
+
         prefConfig=new PrefConfig(application);
+
     }
 
     @NonNull
@@ -75,7 +78,7 @@ public class LoginViewModel extends AndroidViewModel {
 
                 else if(response.body().getResponse().equals("failed"))
                 {
-                    Log.e("Networl" ,"not ok");
+                    Log.e("Network" ,"not ok");
                     Toast.makeText(getApplication(),"worng Email or password",Toast.LENGTH_SHORT).show();
                 }
 

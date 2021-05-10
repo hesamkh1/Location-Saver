@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements MainNavigator, Na
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_main,new MapFragment()).commit();
 
 
-
     }
 
     @Override
@@ -132,12 +131,19 @@ public class MainActivity extends AppCompatActivity implements MainNavigator, Na
             case R.id.home_toolbar:
                 deSelectCheckedState();
                 navigationView.getMenu().getItem(0).setChecked(true);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_main,new MapFragment()).commit();
                 closeDrawer();
                 break;
             case R.id.logout_toolbar:
                 mainViewModel.onlogoutclick();
                 closeDrawer();
                 break;
+            case R.id.saved_toolbar:
+                deSelectCheckedState();
+                navigationView.getMenu().getItem(2).setChecked(true);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_main,new SavedListFragment()).commit();
+                closeDrawer();
+
         }
         return true;
     }

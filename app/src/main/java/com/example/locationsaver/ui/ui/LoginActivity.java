@@ -12,13 +12,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.locationsaver.App;
 import com.example.locationsaver.R;
 import com.example.locationsaver.databinding.ActivityLoginBinding;
 
 import com.example.locationsaver.model.User;
+import com.example.locationsaver.remote.ApiInterface;
 import com.example.locationsaver.viewmodels.LoginViewModel;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 public class LoginActivity extends AppCompatActivity implements LoginNavigator {
+
 
     ActivityLoginBinding binding;
     LoginViewModel loginViewModel;
@@ -26,7 +33,6 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         binding.setViewModel(loginViewModel);
