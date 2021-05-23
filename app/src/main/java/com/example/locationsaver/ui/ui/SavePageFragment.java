@@ -153,7 +153,9 @@ public class SavePageFragment extends Fragment implements SavePageNavigator{
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                             == PackageManager.PERMISSION_DENIED){
                         ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA);}
-                      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                      Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    
                       startActivityForResult(intent, REQUEST_CAMERA);
 
                 } else if (items[i].equals("Gallery")) {

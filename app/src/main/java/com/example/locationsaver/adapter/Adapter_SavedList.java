@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.locationsaver.R;
 import com.example.locationsaver.model.Location;
+import com.example.locationsaver.repository.LocationRepository;
 
 import java.io.File;
 import java.util.List;
@@ -32,11 +33,13 @@ public class Adapter_SavedList extends RecyclerView.Adapter<Adapter_SavedList.My
     private List<Location> locations;
     private Context context;
     FragmentManager fragmentManager;
+    LocationRepository locationRepository;
 
     public Adapter_SavedList(List<Location> locations,FragmentManager fragmentManagerm,Context context) {
         this.context=context;
         this.locations = locations;
         this.fragmentManager = fragmentManager;
+        locationRepository=new LocationRepository(context);
     }
 
     @Override
@@ -73,25 +76,20 @@ public class Adapter_SavedList extends RecyclerView.Adapter<Adapter_SavedList.My
             }
         });
 
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationRepository.DeleteFromDb(locations.get(position));
+                locations.remove(position);
+                notifyDataSetChanged();
+
+            }
+        });
 
 
 
-//        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                // Toast.makeText(context,"click on"+ cafe.get(position).getName().toString(),Toast.LENGTH_SHORT).show();
-//
-//                Bundle bundle=new Bundle();
-//                    bundle.putString("info",cafe.get(position).getInfo());
-//                bundle.putString("category",cafe.get(position).getCategory());
-//
-//                CafePageInfoFragment fragment=new CafePageInfoFragment();
-//                fragment.setArguments(bundle);
-//                fragmentManager.beginTransaction().replace(R.id.fragment_container_home,fragment).addToBackStack("HomePage").commit();
-//
-//            }
-//        });
+
+
     }
 
     @Override
@@ -106,7 +104,7 @@ public class Adapter_SavedList extends RecyclerView.Adapter<Adapter_SavedList.My
     public static class  MyViewHolder extends RecyclerView.ViewHolder{
         TextView name,address,note,group,number;
         ImageView img;
-        Button direction;
+        Button direction,delete;
         LinearLayout parentLayout;
         public MyViewHolder(View itemView)
         {
@@ -118,6 +116,7 @@ public class Adapter_SavedList extends RecyclerView.Adapter<Adapter_SavedList.My
             address=itemView.findViewById(R.id.address_savedlist);
             group=itemView.findViewById(R.id.group_savedlist);
             direction=itemView.findViewById(R.id.direction_savelist);
+            delete=itemView.findViewById(R.id.delete_savelist);
 
         }
 

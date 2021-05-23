@@ -35,6 +35,7 @@ public class LocationRepository {
     public void InsertToDb(Location location){
         db.insert(location);
     }
+    public  void DeleteFromDb(Location location){db.delete(location);}
     public LiveData<List<Location>> GetAllDb()
     {
         return db.getAll();

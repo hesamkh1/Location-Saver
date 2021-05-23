@@ -51,12 +51,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name"/>
+
                 <Button
                     android:id="@+id/direction_savelist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="#3F51B5"
                     android:text="Direction"
-                    />
+                    android:textColor="#fff" />
+                <Button
+                    android:id="@+id/delete_savelist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="#3F51B5"
+                    android:text="Delete"
+                    android:textColor="#fff" />
 
             </LinearLayout>
 
